@@ -1,0 +1,6 @@
+*.pyc
+__pycache__/
+*.log
+snapshots
+key.json
+tcc

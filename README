@@ -1,0 +1,22 @@
+python loadgen.py -s 5,10 -l "https://www.youtube.com/watch?v=ENsXQFcpjcw"  30 10
+
+
+
+python loadgen.py --sinusoid 5,10 --duration 30 --lambda 10 --image debian-vlc --name vlc --cluster k8s --args "https://www.youtube.com/watch?v=N0WjV6MmCyM" "vlc://quit"
+
+python loadgen.py --sinusoid 5,10 --duration 30 --lambda 10 --image mfgmateus/debian-vlc --name vlc --cluster k8s --args "https://www.youtube.com/watch?v=N0WjV6MmCyM" "vlc://quit"
+
+gcloud container clusters get-credentials demo-cluster --zone us-central1-a --project deft-province-207121
+
+export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/key.json
+
+./tcc/bin/activate
+
+./tcc/bin/python loadgen.py --sinusoid 5,10 --duration 5 --lambda 10 --image mfgmateus/debian-vlc --name vlc --cluster k8s --args "https://www.youtube.com/watch?v=N0WjV6MmCyM" "vlc://quit"
+
+
+Audio
+
+VLC-3.0.3 Vetinari
+
+ssh -L 5901:127.0.0.1:5901 -N -f -l cloud 200.19.151.38
