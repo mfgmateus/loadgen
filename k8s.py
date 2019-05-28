@@ -1,22 +1,22 @@
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
-from google.oauth2 import service_account
-from google.cloud.container_v1 import ClusterManagerClient
 from kubernetes import client, config
 import os
 
-SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
-credentials = service_account.Credentials.from_service_account_file(os.getenv('GOOGLE_APPLICATION_CREDENTIALS'), scopes=SCOPES)
-cluster_manager_client = ClusterManagerClient(credentials=credentials)
-cluster = cluster_manager_client.get_cluster(project_id, zone, cluster_id)
 configuration = client.Configuration()
-configuration.host = "https://"+cluster.endpoint+":443"
+configuration.api_key['authorization'] = os.getenv('TOKEN')
+configuration.api_key_prefix['authorization'] = 'Bearer'
+configuration.host = os.getenv('APISERVER')
 configuration.verify_ssl = False
-configuration.api_key = {"authorization": "Bearer " + credentials.token}
 client.Configuration.set_default(configuration)
-api_instance = client.ExtensionsV1beta1Api()
 
-#automatic-load=sim
+
+api_instance = client.CoreV1Api()
+api_instance_ext = client.ExtensionsV1beta1Api()
+
+NODE_TAGS = {"automatic-load": "sim"}
+
+NAMESPACE = 'automatic-loadgen'
 
 def create_deployment_object(deployment_name, name, image, args, mounts, replicas):
     # Configureate Pod template container
@@ -28,7 +28,8 @@ def create_deployment_object(deployment_name, name, image, args, mounts, replica
     # Create and configurate a spec section
     template = client.V1PodTemplateSpec(
         metadata=client.V1ObjectMeta(labels={"app": name}),
-        spec=client.V1PodSpec(containers=[container]))
+        spec=client.V1PodSpec(containers=[container], 
+            node_selector=NODE_TAGS))
     # Create the specification of deployment
     spec = client.ExtensionsV1beta1DeploymentSpec(
         replicas=replicas,
@@ -44,29 +45,28 @@ def create_deployment_object(deployment_name, name, image, args, mounts, replica
 
 def create(deployment_name, name, image, args, mounts, replicas):
     deployment = create_deployment_object(deployment_name, name, image, args, mounts, replicas)
-    api_response = api_instance.create_namespaced_deployment(
+    api_response = api_instance_ext.create_namespaced_deployment(
         body=deployment,
-        namespace="default")
+        namespace=NAMESPACE)
     # print("Deployment created. status='%s'" % str(api_response.status))
 
-def scale(deployment_name, replicas):
-    deployment = api_instance.read_namespaced_deployment(deployment_name, "default")
+def scale(deployment_name, name, image, args, mounts, replicas):
+    deployment = create_deployment_object(deployment_name, name, image, args, mounts, replicas)
     deployment.spec.replicas = replicas
-    api_response = api_instance.patch_namespaced_deployment(
+    api_response = api_instance_ext.patch_namespaced_deployment(
         body=deployment,
         name=deployment_name,
-        namespace="default"
+        namespace=NAMESPACE
     )
     # print("Deployment updated. status='%s'" % str(api_response.status))
 
 def remove(deployment_name):
-    api_response = api_instance.delete_namespaced_deployment(
+    api_response = api_instance_ext.delete_namespaced_deployment(
         name=deployment_name,
-        namespace="default",
+        namespace=NAMESPACE,
         body=client.V1DeleteOptions(
             propagation_policy='Foreground',
             grace_period_seconds=5))
     # print("Deployment deleted. status='%s'" % str(api_response.status))
-
 
 # test_gke("deft-province-207121", "us-central1-a", "demo-cluster")
