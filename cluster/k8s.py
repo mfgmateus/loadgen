@@ -1,7 +1,7 @@
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 from kubernetes import client, config
-import os
+import os, datetime, time
 
 # configuration = client.Configuration()
 # configuration.api_key['authorization'] = os.getenv('TOKEN')
@@ -15,6 +15,8 @@ api_instance = client.CoreV1Api()
 api_instance_ext = client.ExtensionsV1beta1Api()
 
 NAMESPACE = 'default'
+
+
 
 def create_deployment_object(deployment_name, name, image, args, mounts, replicas):
     # Configureate Pod template container
@@ -37,6 +39,7 @@ def create_deployment_object(deployment_name, name, image, args, mounts, replica
         kind="Deployment",
         metadata=client.V1ObjectMeta(name=deployment_name),
         spec=spec)
+    
 
     return deployment
 
@@ -45,6 +48,11 @@ def create(deployment_name, name, image, args, mounts, replicas):
     api_response = api_instance_ext.create_namespaced_deployment(
         body=deployment,
         namespace=NAMESPACE)
+    global out
+    out = open("logs/load_" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".log","w+")
+    out.write("timestamp,clients\n")
+    out.write(str(int(round(time.time()))) + "," + str(replicas) + "\n")
+    out.flush()
     # print("Deployment created. status='%s'" % str(api_response.status))
 
 def scale(deployment_name, name, image, args, mounts, replicas):
@@ -55,6 +63,8 @@ def scale(deployment_name, name, image, args, mounts, replicas):
         name=deployment_name,
         namespace=NAMESPACE
     )
+    out.write(str(int(round(time.time()))) + "," + str(replicas) + "\n")
+    out.flush()
     # print("Deployment updated. status='%s'" % str(api_response.status))
 
 def remove(deployment_name):
