@@ -3,20 +3,18 @@ from kubernetes.client.rest import ApiException
 from kubernetes import client, config
 import os
 
-configuration = client.Configuration()
-configuration.api_key['authorization'] = os.getenv('TOKEN')
-configuration.api_key_prefix['authorization'] = 'Bearer'
-configuration.host = os.getenv('APISERVER')
-configuration.verify_ssl = False
-client.Configuration.set_default(configuration)
-
+# configuration = client.Configuration()
+# configuration.api_key['authorization'] = os.getenv('TOKEN')
+# configuration.api_key_prefix['authorization'] = 'Bearer'
+# configuration.host = os.getenv('APISERVER')
+# configuration.verify_ssl = False
+# client.Configuration.set_default(configuration)
+# config.load_kube_config()
 
 api_instance = client.CoreV1Api()
 api_instance_ext = client.ExtensionsV1beta1Api()
 
-NODE_TAGS = {"automatic-load": "sim"}
-
-NAMESPACE = 'automatic-loadgen'
+NAMESPACE = 'default'
 
 def create_deployment_object(deployment_name, name, image, args, mounts, replicas):
     # Configureate Pod template container
@@ -28,8 +26,7 @@ def create_deployment_object(deployment_name, name, image, args, mounts, replica
     # Create and configurate a spec section
     template = client.V1PodTemplateSpec(
         metadata=client.V1ObjectMeta(labels={"app": name}),
-        spec=client.V1PodSpec(containers=[container], 
-            node_selector=NODE_TAGS))
+        spec=client.V1PodSpec(containers=[container]))
     # Create the specification of deployment
     spec = client.ExtensionsV1beta1DeploymentSpec(
         replicas=replicas,
