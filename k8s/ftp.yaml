@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen-ftp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loadgen-ftp
+  template:
+    metadata:
+      labels:
+        app: loadgen-ftp
+    spec:
+      containers:
+      - image: metabrainz/docker-anon-ftp
+        name: anon-ftp
+        volumeMounts:
+          - name: loadgen-volume
+            mountPath: "/var/ftp"
+      volumes:
+      - name: loadgen-volume
+        persistentVolumeClaim:
+          claimName: nfs-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftp-loadgen-svc
+spec:
+  selector:
+    app: loadgen-ftp
+  ports:
+    - port: 20
+      name: ftp20
+    - port: 21
+      name: ftp21
+    - port: 65500
+      name: p1
+    - port: 65501
+      name: p2
+    - port: 65502
+      name: p3
+    - port: 65503
+      name: p4
+    - port: 65504
+      name: p5
+    - port: 65505
+      name: p6
+    - port: 65506
+      name: p7
+    - port: 65507
+      name: p8
+    - port: 65508
+      name: p9
+    - port: 65509
+      name: p10
+    - port: 65510
+      name: p11
+    - port: 65511
+      name: p12
+    - port: 65512
+      name: p13
+    - port: 65513
+      name: p14
+    - port: 65514
+      name: p15
+    - port: 65515
+      name: p16
+  type: LoadBalancer          

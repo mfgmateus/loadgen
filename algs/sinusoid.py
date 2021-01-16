@@ -65,9 +65,9 @@ def run(cluster, args):
         if num_client != replicas:
             logger.info("Scalling service to %s replicas" % (replicas))
             if num_client == 0:
-                cluster.create(args.service, args.name, args.image, args.args, args.mounts, replicas)
+                cluster.create(args.service, args.name, args.image, args.args, args.mounts, replicas, args.duration)
             else:
-                cluster.scale(args.service, args.name, args.image, args.args, args.mounts, replicas)
+                cluster.scale(args.service, args.name, args.image, args.args, args.mounts, replicas, args.duration)
             num_client = replicas
 
         # refresh the timer

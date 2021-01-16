@@ -46,11 +46,11 @@ def run(cluster, args):
 	maximum_clients = clients + ru_clients
 	minimum_clients = clients
 
-	end = datetime.datetime.now() + datetime.timedelta(minutes=duration)	
+	end = datetime.datetime.now() + datetime.timedelta(minutes=duration)
 
-	periods = duration / period
+	periods = int(duration / period)
 
-	cluster.create(args.service, args.name, args.image, args.args, args.mounts, clients)
+	cluster.create(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration)
 
 	for i in range(0, periods):
 
@@ -73,7 +73,7 @@ def run(cluster, args):
 			# logging.info("Starting rampup!")
 			while clients < maximum_clients:
 				clients += 1
-				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients)
+				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration)
 				#logging.info("Number of clients increased to {0}".format(clients))
 				time.sleep(ru_sleep_seconds)
 			
@@ -83,7 +83,7 @@ def run(cluster, args):
 			# logging.info("Starting rampdown")
 			while clients > minimum_clients:
 				clients -= 1
-				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients)
+				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration)
 				#logging.info("Number of clients decreased to {0}".format(clients))
 				time.sleep(rd_sleep_seconds)
 			

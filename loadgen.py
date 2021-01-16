@@ -9,7 +9,7 @@ Created on Sept 21, 2018
 import logging
 import argparse
 from cluster import k8s, test
-from algs import sinusoid, flashcrowd
+from algs import sinusoid, flashcrowd, constant
 from collections import deque
 import signal
 import sys
@@ -35,6 +35,8 @@ def run(cluster, args):
         sinusoid.run(cluster, args)
     elif args.method == 'flashcrowd':
         flashcrowd.run(cluster, args)
+    elif args.method == 'constant':
+        constant.run(cluster, args)
     else:
         print("Method " + args.method + " is not valid!")
 

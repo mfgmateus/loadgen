@@ -1,0 +1,64 @@
+------- tests
+
+python3 loadgen.py --lambda 10 --image mfgmateus/cassandra-stress:1.0.6 --name cassandra-stress --cluster k8s --method=flashcrowd --args "" --period=10 --shock-level=3 --duration=30 --ocurrences=3
+
+python3 loadgen.py --lambda 20 --image mfgmateus/cassandra-stress:1.0.6 --name cassandra-stress --cluster k8s --method=sinusoid --args "" --period=10 --duration=30 --sinusoid 10,10 
+
+
+python3 loadgen.py --lambda 10 --image mfgmateus/cassandra-stress:1.0.6 --name cassandra-stress --cluster k8s --method=flashcrowd --args "" --period=10 --shock-level=5 --duration=30 --ocurrences=3
+
+python3 loadgen.py --lambda 30 --image mfgmateus/cassandra-stress:1.0.6 --name cassandra-stress --cluster k8s --method=sinusoid --args "" --period=10 --duration=30 --sinusoid 20,10 
+
+---
+
+python3 loadgen.py --lambda 10 --image mfgmateus/jmeter:1.0.0 --name api-stress --cluster k8s --method=flashcrowd --args='-Jserver=34.121.122.69' --period=10 --shock-level=3 --duration=30 --ocurrences=3
+
+python3 loadgen.py --lambda 20 --image mfgmateus/jmeter:1.0.0 --name api-stress --cluster k8s --method=sinusoid --args='-Jserver=34.121.122.69' --period=10 --duration=30 --sinusoid 10,10 
+
+
+
+python3 loadgen.py --lambda 10 --image mfgmateus/jmeter:1.0.0 --name api-stress --cluster k8s --method=flashcrowd --args='-Jserver=34.121.122.69' --period=10 --shock-level=5 --duration=30 --ocurrences=3
+
+python3 loadgen.py --lambda 30 --image mfgmateus/jmeter:1.0.0 --name api-stress --cluster k8s --method=sinusoid --args='-Jserver=34.121.122.69' --period=10 --duration=30 --sinusoid 20,10 
+
+
+--
+
+
+------- tests2
+
+
+python3 loadgen.py --lambda 10 --image mfgmateus/jmeter:1.0.1 --name api-stress --cluster k8s --method=flashcrowd --args='-Jserver=34.121.122.69' --period=15 --shock-level=3 --duration=60 --ocurrences=3
+
+python3 loadgen.py --lambda 20 --image mfgmateus/jmeter:1.0.1 --name api-stress --cluster k8s --method=sinusoid --args='-Jserver=34.121.122.69' --period=15 --duration=60 --sinusoid 10,20 
+
+
+
+python3 loadgen.py --lambda 10 --image mfgmateus/cassandra-stress:1.0.7 --name cassandra-stress --cluster k8s --method=flashcrowd --args "" --period=15 --shock-level=3 --duration=60 --ocurrences=3
+
+python3 loadgen.py --lambda 20 --image mfgmateus/cassandra-stress:1.0.7 --name cassandra-stress --cluster k8s --method=sinusoid --args "" --period=10 --duration=60 --sinusoid 10,20 
+
+
+python3 loadgen.py --lambda 10 --image mfgmateus/jmeter:1.0.1 --name api-stress --cluster k8s --method=flashcrowd --args='-Jserver=34.121.122.69' --period=15 --shock-level=5 --duration=60 --ocurrences=3
+
+python3 loadgen.py --lambda 30 --image mfgmateus/jmeter:1.0.1 --name api-stress --cluster k8s --method=sinusoid --args='-Jserver=34.121.122.69' --period=15 --duration=60 --sinusoid 20,20 
+
+
+python3 loadgen.py --lambda 10 --image mfgmateus/cassandra-stress:1.0.7 --name cassandra-stress --cluster k8s --method=flashcrowd --args "" --period=15 --shock-level=5 --duration=60 --ocurrences=3
+
+python3 loadgen.py --lambda 30 --image mfgmateus/cassandra-stress:1.0.7 --name cassandra-stress --cluster k8s --method=sinusoid --args "" --period=10 --duration=60 --sinusoid 20,20 
+
+
+-- baseline
+
+python3 loadgen.py --lambda 5 --image mfgmateus/jmeter:1.0.2 --name api-stress --cluster k8s --method=constant --args='-Jserver=35.184.64.160' --duration=30
+python3 loadgen.py --lambda 10 --image mfgmateus/jmeter:1.0.2 --name api-stress --cluster k8s --method=constant --args='-Jserver=35.184.64.160' --duration=30
+
+python3 loadgen.py --lambda 5 --image mfgmateus/cassandra-stress:1.0.8 --name cassandra-stress --cluster k8s --method=constant --args "" --duration=30
+
+
+-- extra
+
+python3 loadgen.py --lambda 10 --image mfgmateus/jmeter:1.0.2 --name api-stress --cluster k8s --method=flashcrowd --args='-Jserver=35.202.208.166' --period=15 --shock-level=5 --duration=60 --ocurrences=3
+
+

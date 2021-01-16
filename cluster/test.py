@@ -1,6 +1,6 @@
 import datetime, time
 
-def create(deployment_name, name, image, args, mounts, replicas):
+def create(deployment_name, name, image, args, mounts, replicas, duration):
     print("Creating service {0} with {1} clients".format(deployment_name, replicas))
     global out
     out = open("logs/load_" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".log","w+")
