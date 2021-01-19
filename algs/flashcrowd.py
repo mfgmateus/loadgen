@@ -1,7 +1,14 @@
-import random, math, time, logging, datetime
+import random, math, time, logging, datetime, os
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
+test_start = datetime.datetime.now()
+test_name = test_start.strftime('%Y%m%d%H%M')
+log_dir = "logs/" + test_name
+info_file = log_dir + "/load_" + test_start.strftime("%Y%m%d%H%M") + ".txt"
+
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
 def run(cluster, args):
 
@@ -10,6 +17,18 @@ def run(cluster, args):
 	shock_level = args.shock_level #2
 	duration = args.duration #30
 	ocurrences = args.ocurrences #5
+
+	with open(info_file, "w") as f:
+		f.write("name={0}\n".format(args.name))
+		f.write("method=flashcrowd\n")
+		f.write("cluster={0}\n".format(args.cluster))
+		f.write("environment={0}\n".format(args.envargs))
+		f.write("args={0}\n".format(args.args))
+		f.write("duration={0}\n".format(args.duration))
+		f.write("lambda={0}\n".format(args.lambd))
+		f.write("period={0}\n".format(period))
+		f.write("shock_level={0}\n".format(shock_level))
+		f.write("ocurrences={0}\n".format(ocurrences))
 
 	start = now = datetime.datetime.now()
 	end   = now + datetime.timedelta(minutes=duration)	
@@ -50,7 +69,7 @@ def run(cluster, args):
 
 	periods = int(duration / period)
 
-	cluster.create(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration)
+	cluster.create(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration, args.envargs)
 
 	for i in range(0, periods):
 
@@ -73,7 +92,7 @@ def run(cluster, args):
 			# logging.info("Starting rampup!")
 			while clients < maximum_clients:
 				clients += 1
-				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration)
+				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration, args.envargs)
 				#logging.info("Number of clients increased to {0}".format(clients))
 				time.sleep(ru_sleep_seconds)
 			
@@ -83,7 +102,7 @@ def run(cluster, args):
 			# logging.info("Starting rampdown")
 			while clients > minimum_clients:
 				clients -= 1
-				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration)
+				cluster.scale(args.service, args.name, args.image, args.args, args.mounts, clients, args.duration, args.envargs)
 				#logging.info("Number of clients decreased to {0}".format(clients))
 				time.sleep(rd_sleep_seconds)
 			
@@ -97,3 +116,6 @@ def run(cluster, args):
 	while datetime.datetime.now() < end:
 		time.sleep(10)
 		# logging.info("Waiting for duration ending!")
+	
+	time.sleep(60)
+	cluster.collect_data(args.dropbox_token)

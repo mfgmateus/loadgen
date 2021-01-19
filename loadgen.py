@@ -54,6 +54,7 @@ def main():
     parser.add_argument("-i", "--image", dest="image", help="The docker image to run", required=True)
     parser.add_argument("-n", "--name", dest="name", help="The application-name", required=True)
     parser.add_argument("-a", "--args", dest="args", nargs='+', help="The application arguments", required=False)
+    parser.add_argument("-e", "--envargs", dest="envargs", nargs='+', help="The application environment arguments. ENV1:VALUE1 ENV2:VALUE2 ", required=False)
     parser.add_argument("-m", "--method", dest="method", help="The method to run (sinusoid, flashcrowd)", required=True)
     parser.add_argument("-c", "--cluster", choices=["k8s", "test"], dest="cluster", help="The cluster to use", required=True)
 
@@ -69,6 +70,8 @@ def main():
     parser.add_argument("-p", "--period", dest="period", type=int, help="The period of flashcrowd")
     parser.add_argument("-o", "--ocurrences", dest="ocurrences", type=int, help="The number of flash ocurrences")
     parser.add_argument("-sl", "--shock-level", dest="shock_level", type=int, help="The number of flash ocurrences")
+
+    parser.add_argument("-dr", "--dropbox-token", dest="dropbox_token", help="The dropbox token to upload the files", required=False)
 
     # Process arguments
     args = parser.parse_args()
