@@ -118,4 +118,4 @@ def run(cluster, args):
 		# logging.info("Waiting for duration ending!")
 	
 	time.sleep(60)
-	cluster.collect_data(args.dropbox_token)
+	cluster.collect_data(args.name, args.dropbox_token)

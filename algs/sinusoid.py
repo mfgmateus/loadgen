@@ -93,4 +93,4 @@ def run(cluster, args):
         now = datetime.datetime.now()
 
     time.sleep(60)
-    cluster.collect_data(args.dropbox_token)
+    cluster.collect_data(args.name, args.dropbox_token)

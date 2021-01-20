@@ -231,7 +231,7 @@ def backup_file(pod_name, file_name):
     resp.close()
     return dest_file
 
-def collect_data(dropbox_token):
+def collect_data(test_name, dropbox_token):
     collectors = core_api_instance.list_namespaced_pod(namespace=NAMESPACE, label_selector="collector=true")
     for collector in collectors.items:
         pod_name = collector.metadata.name
@@ -240,13 +240,13 @@ def collect_data(dropbox_token):
         collect_files(pod_name, files)
     
     if dropbox_token != None:
-        upload_to_dropbox(dropbox_token)
+        upload_to_dropbox(test_name, dropbox_token)
 
 
-def upload_to_dropbox(access_token):
+def upload_to_dropbox(test_name, access_token):
     files = [  log_dir + "/" + name for name in os.listdir(log_dir) if os.path.isfile(os.path.join(log_dir, name)) ]
     transfer_data = DropboxTransferData(access_token)
     for source in files:
-        destination =  "/loadgen/" + source
+        destination =  "/loadgen/" + test_name + "/" + source
         print("Uploading {0}".format(destination))
         transfer_data.upload_file(source, destination)
