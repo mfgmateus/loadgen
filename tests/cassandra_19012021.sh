@@ -34,3 +34,10 @@ python3 loadgen.py --lambda 10 --image mfgmateus/jmeter:1.0.4 --name api-stress 
 sleep 600
 python3 loadgen.py --lambda 30 --image mfgmateus/jmeter:1.0.4 --name api-stress --cluster k8s --method=sinusoid --args="-Jserver=35.184.64.160 -Jthreads=90 -Jduration=3600" --period=15 --duration=60 --sinusoid 20,20 --dropbox-token=$DROPBOX_TOKEN 
 
+
+
+
+
+python3 loadgen.py --lambda 10 --image mfgmateus/cassandra-stress:1.0.10 --name cassandra-stress --cluster k8s --method=flashcrowd --args "" --period=15 --shock-level=3 --duration=60 --ocurrences=3 --dropbox-token=$DROPBOX_TOKEN --envargs THREADS:8 NODES:192.168.100.1
+
+
